@@ -7,17 +7,27 @@ import { GoogleLogin} from 'react-google-login'
 import Icon from './Icon'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
+import { signin, signup } from '../../actions/auth'
+
+const initialState = {firstName: '', lastName: '', email: '', password: '', confirmPassword: '',}
 
 export default function Auth() {
-
   const classes = useStyles();
   const [isSignup, switchModeSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState(initialState);
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const handleSubmit = () => {}
-  const handleChange = () => {}
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if(isSignup) {
+      dispatch(signup(formData, history));
+    } else {
+      dispatch(signin(formData, history));
+    }
+  }
+  const handleChange = (e) => {setFormData({ ...formData, [e.target.name] : e.target.value });}
   const handleShowPassword = () => setShowPassword((preShowPassword) => !preShowPassword) 
   const switchMode = () => switchModeSignUp((preShowPassword) => !preShowPassword)
   const googleSuccess = async (res) => {
@@ -46,7 +56,7 @@ export default function Auth() {
             {isSignup ? (
                 <>
                   <Input name="firstName" label="First Name" handleChange={handleChange} autoFocus half></Input>
-                  <Input name="firstName" label="First Name" handleChange={handleChange} half></Input>
+                  <Input name="lastName" label="Last Name" handleChange={handleChange} half></Input>
                 </>
               ) : null
             }
